@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Optional: VS Code settings
+.vscode/
+
+# Coverage reports
+coverage/
+
+# Build directories (if using TypeScript or bundlers)
+dist/
+build/
+
+# Optional: Frontend cache or dependency folders
+*.cache/
+.next/
+out/
+yarn.lock
+pnpm-lock.yaml
+package-lock.json
+
+# Optional: Local database data
+dump/
