@@ -1,34 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Navigate, Route, Routes } from "react-router"
+import Home from './pages/Home'
+import Singup from './pages/Signup'
+import Login from './pages/Login'
+import Notification from './pages/Notification'
+import Call from './pages/Call'
+import Chat from './pages/Chat'
+import Onboarding from './pages/Onboarding'
+import { ToastContainer } from 'react-toastify';
+import { useQuery } from "@tanstack/react-query"
+import { axiosInstance } from "./lib/axios"
+import PageLoader from './components/PageLoader'
+import useAuthUser from "./hooks/useAuthUser"
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const { isLoading, authUser } = useAuthUser();
+
+  const isAuthenticated = Boolean(authUser);
+  const isOnboarded = authUser?.isOnboarded
+
+  if (isLoading) return <PageLoader />
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="h-screen" data-theme='night'>
+      <Routes>
+        <Route path="/" element={isAuthenticated && isOnboarded ? <Home /> : <Navigate to={!isAuthenticated ? '/login' : '/onboarding'} />} />
+        <Route path="/signup" element={!isAuthenticated ? <Singup /> : <Navigate to='/' />} />
+        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to='/' />} />
+        <Route path="/notification" element={isAuthenticated ? <Notification /> : <Navigate to='/login' />} />
+        <Route path="/call" element={isAuthenticated ? <Call /> : <Navigate to='/login' />} />
+        <Route path="/chat" element={isAuthenticated ? <Chat /> : <Navigate to='/login' />} />
+        <Route path="/onboarding" element={isAuthenticated ? <Onboarding /> : <Navigate to='/login' />} />
+      </Routes>
+      <ToastContainer />
+    </div>
   )
 }
 
