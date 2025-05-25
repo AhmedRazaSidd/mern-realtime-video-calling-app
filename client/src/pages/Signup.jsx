@@ -1,12 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ShipWheelIcon } from 'lucide-react'
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { signup } from '../lib/api';
+import useSignup from '../hooks/useSignup';
 
 const Signup = () => {
 
-    const queryClient = useQueryClient();
 
     const [signupData, setSignupData] = useState({
         fullName: "",
@@ -14,10 +12,7 @@ const Signup = () => {
         password: ""
     });
 
-    const { mutate: signupMutation, isPending, error } = useMutation({
-        mutationFn: signup,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['authUser'] })
-    });
+    const { signupMutation, isPending, error } = useSignup();
 
     const handleSignup = (e) => {
         e.preventDefault();
@@ -37,7 +32,7 @@ const Signup = () => {
 
                     {/* ERROR MESSAGE IF ANY */}
                     {error && (<div className='alert alert-error mb-4'>
-                        <span>{error.response.data.message}</span>
+                        <span>{error.response?.data?.message}</span>
                     </div>)}
 
                     <div className='w-full'>
@@ -102,7 +97,7 @@ const Signup = () => {
                     <div className='max-w-md p-8'>
                         {/* Illustration */}
                         <div className='relative aspect-square max-w-sm mx-auto'>
-                            <img src="/signup.png" alt="Language connection illustration" className='w-full h-full' />
+                            <img src="/i.png" alt="Language connection illustration" className='w-full h-full' />
                         </div>
                         <div className='text-center space-y-3 mt-6'>
                             <h2 className='text-xl font-semibold'>Connect with language partners worldwide</h2>

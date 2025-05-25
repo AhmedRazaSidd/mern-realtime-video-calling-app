@@ -3,7 +3,8 @@ import useAuthUser from '../hooks/useAuthUser'
 import { completeOnboarding } from '../lib/api';
 import { toast } from 'react-toastify'
 import { useState } from 'react';
-import { CameraIcon, ShuffleIcon } from 'lucide-react';
+import { CameraIcon, LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from 'lucide-react';
+import { LANGUAGES } from '../constaints/index';
 
 const Onboarding = () => {
   const { isLoading, authUser } = useAuthUser();
@@ -13,8 +14,8 @@ const Onboarding = () => {
     fullName: authUser?.fullName || "",
     bio: authUser?.bio || "",
     nativeLanguage: authUser?.nativeLanguage || "",
-    larningLanguage: authUser?.larningLanguage || "",
-    loaction: authUser?.loaction || "",
+    learningLanguage: authUser?.learningLanguage || "",
+    location: authUser?.location || "",
     profilePic: authUser?.profilePic || ""
   })
 
@@ -23,6 +24,9 @@ const Onboarding = () => {
     onSuccess: () => {
       toast.success('Profile onboarded successfully');
       queryClient.invalidateQueries({ queryKey: ['authUser'] });
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message)
     }
   });
 
@@ -33,6 +37,10 @@ const Onboarding = () => {
 
   const handleRandomAvatar = () => {
 
+    const idx = Math.floor(Math.random() * 100) + 1; // 1-100 included
+    const randomAvatar = `https://avatar.iran.liara.run/public/${idx}`;
+    setFormState({ ...formState, profilePic: randomAvatar });
+    toast.success('Random profile picture generated!')
   }
 
   return (
@@ -62,7 +70,6 @@ const Onboarding = () => {
                 </button>
               </div>
             </div>
-
             {/* FULL NAME */}
             <div className='form-control'>
               <label className='label'>
@@ -70,12 +77,63 @@ const Onboarding = () => {
               </label>
               <input type="text" placeholder='Full Name' name='fullName' value={formState.fullName} onChange={(e) => setFormState({ ...formState, fullName: e.target.value })} className='input input-bordered w-full focus:outline-none focus:border-primary/25' />
             </div>
+            {/* BIO */}
             <div className='form-control'>
               <label className='label'>
                 <span className='label-text'>Bio</span>
               </label>
-              <textarea name="bio" value={formState.bio} onChange={(e) => setFormState({ ...formState, bio: e.target.value })} className='textarea textarea-bordered h-24' placeholder='Tell others about yourself and your language learning goals'></textarea>
+              <textarea name="bio" value={formState.bio} onChange={(e) => setFormState({ ...formState, bio: e.target.value })} className='textarea textarea-bordered h-24 focus:outline-none' placeholder='Tell others about yourself and your language learning goals'></textarea>
             </div>
+            {/* LANGUAGES */}
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              {/* NATIVE LANGUAGES */}
+              <div className='form-control'>
+                <label className='label'>
+                  <span className='label-text'>Native Language</span>
+                </label>
+                <select name="nativeLanguage" value={formState.nativeLanguage} onChange={(e) => setFormState({ ...formState, nativeLanguage: e.target.value })} className='select select-bordered w-full focus:outline-none'>
+                  <option value="">Select your native language</option>
+                  {LANGUAGES.map((lang, index) => (
+                    <option key={index} value={lang.toLowerCase()}>
+                      {lang}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className='form-control'>
+                <label className='label'>
+                  <span className='label-text'>Learning Language</span>
+                </label>
+                <select name="learningLanguage" value={formState.learningLanguage} onChange={(e) => setFormState({ ...formState, learningLanguage: e.target.value })} className='select select-bordered w-full focus:outline-none'>
+                  <option value="">Select your Learning language</option>
+                  {LANGUAGES.map((lang, index) => (
+                    <option key={index} value={lang.toLowerCase()}>
+                      {lang}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {/* Location */}
+            <div className='form-control'>
+              <label className='label'>
+                <span className='label-text'>Location</span>
+              </label>
+              <div className='relative'>
+                <MapPinIcon className='absolute top-1/2 transform  -translate-y-1/2 left-3 size-5 text-base-content opacity-70' />
+                <input type="text" name='location' value={formState.location} onChange={(e) => setFormState({ ...formState, location: e.target.value })} className='input input-bordered w-full pl-10 focus:outline-none' placeholder='City, Country' />
+              </div>
+            </div>
+            {/* SUBMIT  BUTTON */}
+            <button className='btn btn-primary w-full' disabled={isPending} type='submit'>
+              {!isPending ? <>
+                <ShipWheelIcon className='size-5' />
+                Complete Onboarding
+              </> : <>
+                <LoaderIcon className='animate-spin size-5 mr-2' />
+                Onboarding...
+              </>}
+            </button>
           </form>
         </div>
       </div>
