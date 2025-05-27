@@ -34,7 +34,11 @@ function App() {
           : <Navigate to={!isAuthenticated ? '/login' : '/onboarding'} />} />
         <Route path="/signup" element={!isAuthenticated ? <Singup /> : <Navigate to='/' />} />
         <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to={isOnboarded ? '/' : '/onboarding'} />} />
-        <Route path="/notification" element={isAuthenticated ? <Notification /> : <Navigate to='/login' />} />
+        <Route path="/notifications" element={isAuthenticated && isOnboarded ? (
+          <Layout showSidebar>
+            <Notification />
+          </Layout>
+        ) : <Navigate to={!isAuthenticated ? '/login' : '/onboarding'} />} />
         <Route path="/call" element={isAuthenticated ? <Call /> : <Navigate to='/login' />} />
         <Route path="/chat" element={isAuthenticated ? <Chat /> : <Navigate to='/login' />} />
         <Route path="/onboarding" element={isAuthenticated ? (!isOnboarded ? <Onboarding /> : (<Navigate to='/' />)) : <Navigate to='/login' />} />
