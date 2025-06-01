@@ -3,8 +3,8 @@ import User from "../models/user.model.js";
 import jwt from 'jsonwebtoken'
 
 export const signup = async (req, res) => {
-    const { fullName, email, password } = req.body;
     try {
+        const { fullName, email, password } = req.body;
         if (!fullName || !email || !password) {
             return res.status(400).json({ message: 'All fields are required' });
         }
@@ -65,8 +65,8 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
 
-    const { email, password } = req.body;
     try {
+        const { email, password } = req.body;
 
         if (!email || !password) {
             return res.status(400).json({ message: 'All fields are required' });
