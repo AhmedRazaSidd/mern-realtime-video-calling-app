@@ -11,25 +11,32 @@ const app = express();
 
 const PORT = process.env.PORT || 5000
 
-app.use(cors({
-    origin: 'https://mern-realtime-video-calling-app.vercel.app',
-    credentials: true,
-}))
-app.use(express.json());
-app.use(cookieParser());
 
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/chat', chatRoutes);
+    (async () => {
+        try {
+            await connectDb();
 
+            app.use(cors({
+                origin: process.env.APP_URL,
+                credentials: true,
+            }))
+            app.use(express.json());
+            app.use(cookieParser());
 
-app.listen(PORT, () => {
-    console.log('====================================');
-    console.log(`Server is running on this port:${PORT}`);
-    console.log('====================================');
-    connectDb();
-})
+            app.use('/api/auth', authRoutes);
+            app.use('/api/users', userRoutes);
+            app.use('/api/chat', chatRoutes);
 
 
+            app.listen(PORT, () => {
+                console.log('====================================');
+                console.log(`Server is running on this port:${PORT}`);
+                console.log('====================================');
+            })
 
+        } catch (error) {
+            console.error('Failed to connect to MongoDB:', error.message);
+            process.exit(1);
+        }
 
+    })();
