@@ -4,7 +4,7 @@ import Singup from './pages/Signup'
 import Login from './pages/Login'
 import Notification from './pages/Notification'
 import Call from './pages/Call'
-import Chat from './pages/Chat'
+import Chats from './pages/Chats'
 import Onboarding from './pages/Onboarding'
 import { ToastContainer } from 'react-toastify';
 import PageLoader from './components/PageLoader'
@@ -39,8 +39,14 @@ function App() {
             <Notification />
           </Layout>
         ) : <Navigate to={!isAuthenticated ? '/login' : '/onboarding'} />} />
-        <Route path="/call" element={isAuthenticated ? <Call /> : <Navigate to='/login' />} />
-        <Route path="/chat" element={isAuthenticated ? <Chat /> : <Navigate to='/login' />} />
+        <Route path="/call/:id" element={isAuthenticated && isOnboarded ?
+          <Call />
+          : <Navigate to={!isAuthenticated ? '/login' : '/onboarding'} />} />
+        <Route path="/chat/:id" element={isAuthenticated && isOnboarded ?
+          <Layout showSidebar={false}>
+            <Chats />
+          </Layout>
+          : <Navigate to={isAuthenticated ? '/login' : '/onboarding'} />} />
         <Route path="/onboarding" element={isAuthenticated ? (!isOnboarded ? <Onboarding /> : (<Navigate to='/' />)) : <Navigate to='/login' />} />
       </Routes>
       <ToastContainer />
