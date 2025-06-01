@@ -49,10 +49,10 @@ export const signup = async (req, res) => {
         });
 
         res.cookie('jwt', token, {
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            maxAge: 7 * 24 * 60 * 60 * 100,
             httpOnly: true,
             sameSite: 'strict',
-            secure: process.env.NODE_ENV === 'production'
+            secure: process.env.NODE_ENV !== 'development'
         })
 
         res.status(201).json({ success: true, user: newUser });
@@ -84,11 +84,11 @@ export const login = async (req, res) => {
         });
 
         res.cookie('jwt', token, {
+            maxAge: 7 * 24 * 60 * 60 * 100,
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Send cookie only over HTTPS in production
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-site cookies
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        });
+            sameSite: 'strict',
+            secure: process.env.NODE_ENV !== 'development'
+        })
 
 
         res.status(200).json({ success: true, user });
