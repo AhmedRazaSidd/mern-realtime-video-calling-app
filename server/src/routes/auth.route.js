@@ -12,7 +12,12 @@ router.post('/onboarding', protectRoute, onboard);
 
 // check if user logged in
 router.get('/me', protectRoute, (req, res) => {
-    res.status(200).json({ success: true, user: req.user })
+    try {
+        res.status(200).json({ success: true, user: req.user })
+    } catch (error) {
+        console.log('Error in checkAuth controller', error.message);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
 export default router;
