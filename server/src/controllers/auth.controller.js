@@ -84,11 +84,12 @@ export const login = async (req, res) => {
         });
 
         res.cookie('jwt', token, {
-            maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true,
-            sameSite: 'strict',
-            secure: process.env.NODE_ENV === 'production'
-        })
+            secure: process.env.NODE_ENV === 'production', // Send cookie only over HTTPS in production
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-site cookies
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
 
         res.status(200).json({ success: true, user });
     } catch (error) {
