@@ -11,21 +11,23 @@ import { connectDb } from './lib/db.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors({
-    origin: process.env.APP_URL,
-    credentials: true,
-}));
-app.use(express.json());
-app.use(cookieParser());
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/chat', chatRoutes);
 
 // Start server
 const startServer = async () => {
+    // Middleware
+    app.use(cors({
+        origin: process.env.APP_URL,
+        credentials: true,
+    }));
+    app.use(express.json());
+    app.use(cookieParser());
+
+    // Routes
+    app.use('/api/auth', authRoutes);
+    app.use('/api/users', userRoutes);
+    app.use('/api/chat', chatRoutes);
+
     try {
         await connectDb();
         app.listen(PORT, () => {
